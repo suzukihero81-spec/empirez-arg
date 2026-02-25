@@ -1,42 +1,284 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Transmission 441</title>
-<style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Transmission 441</title>
 
-body {
-    margin: 0;
-    background: url('background.png') no-repeat center center fixed;
-    background-size: cover;
-    color: #00ff00;
-    font-family: monospace;
-}
+  <style>
+    body {
+      margin: 0;
+      background: url('background.png') no-repeat center center fixed; /* <-- change if needed */
+      background-size: cover;
+      color: #00ff00;
+      font-family: monospace;
+    }
 
-.overlay {
-    background-color: rgba(0, 0, 0, 0.75);
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
+    .overlay {
+      background-color: rgba(0, 0, 0, 0.75);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 24px;
+      box-sizing: border-box;
+    }
 
-</style>
+    .terminal {
+      width: min(900px, 92vw);
+      text-align: left;
+      border: 1px solid rgba(0, 255, 0, 0.35);
+      border-radius: 12px;
+      padding: 18px 18px 14px;
+      background: rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(2px);
+      box-shadow: 0 0 30px rgba(0,255,0,0.08);
+    }
+
+    .small {
+      opacity: 0.85;
+      font-size: 0.95rem;
+    }
+
+    .scanlines:before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.03),
+        rgba(255,255,255,0.03) 1px,
+        rgba(0,0,0,0) 3px,
+        rgba(0,0,0,0) 6px
+      );
+      mix-blend-mode: overlay;
+      opacity: 0.12;
+    }
+
+    /* Glitch effect (applies to headline) */
+    .glitch {
+      position: relative;
+      display: inline-block;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin: 0 0 10px 0;
+      font-size: clamp(22px, 3.2vw, 34px);
+    }
+
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      overflow: hidden;
+      opacity: 0.8;
+    }
+
+    .glitch::before {
+      transform: translate(1px, 0);
+      clip-path: inset(0 0 65% 0);
+      animation: glitchTop 2.8s infinite linear;
+    }
+
+    .glitch::after {
+      transform: translate(-1px, 0);
+      clip-path: inset(45% 0 0 0);
+      animation: glitchBottom 2.1s infinite linear;
+    }
+
+    @keyframes glitchTop {
+      0%, 100% { transform: translate(1px, 0); opacity: 0.55; }
+      10% { transform: translate(2px, -1px); }
+      25% { transform: translate(-2px, 1px); }
+      40% { transform: translate(3px, 0); opacity: 0.8; }
+      55% { transform: translate(-1px, -1px); }
+      70% { transform: translate(2px, 1px); opacity: 0.65; }
+      85% { transform: translate(-3px, 0); }
+    }
+
+    @keyframes glitchBottom {
+      0%, 100% { transform: translate(-1px, 0); opacity: 0.55; }
+      15% { transform: translate(-2px, 1px); }
+      30% { transform: translate(3px, 0); opacity: 0.8; }
+      45% { transform: translate(-3px, -1px); }
+      60% { transform: translate(2px, 1px); opacity: 0.65; }
+      75% { transform: translate(-1px, 0); }
+      90% { transform: translate(2px, -1px); }
+    }
+
+    .actions {
+      margin-top: 12px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    button {
+      background: rgba(0, 255, 0, 0.12);
+      border: 1px solid rgba(0, 255, 0, 0.35);
+      color: #00ff00;
+      font-family: monospace;
+      padding: 10px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    button:hover { background: rgba(0, 255, 0, 0.18); }
+
+    .hint {
+      margin-top: 10px;
+      opacity: 0.7;
+      font-size: 0.9rem;
+    }
+
+    /* Typing area */
+    #typed {
+      white-space: pre-wrap;
+      line-height: 1.35;
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    .caret {
+      display: inline-block;
+      width: 10px;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+  </style>
 </head>
-<body>
 
-<div class="overlay">
-    <h1>IMPERIAL TRANSMISSION RESTORED</h1>
+<body class="scanlines">
+  <div class="overlay">
+    <div class="terminal">
+      <h1 class="glitch" data-text="EMPIREZ // NODE 441 RESTORED">EMPIREZ // NODE 441 RESTORED</h1>
 
-    <p>Only those who listen will find what was buried.</p>
+      <!-- This is what gets typed out -->
+      <p id="typed"></p><span class="caret">█</span>
 
-    <p><strong>Coordinates:</strong></p>
+      <div class="actions">
+        <button id="btnStatic">Enable Radio Static</button>
+        <button id="btnReplay">Replay Transmission</button>
+      </div>
 
-    <p>MjUxMi4zNyA5MDc5LjUy</p>
+      <div class="hint small">
+        Tip: sound may require a click (browser autoplay rules).
+      </div>
 
-    <!-- The Empire watches from above -->
-</div>
+      <!-- The Empire watches from above -->
+    </div>
+  </div>
 
+  <script>
+    // ===== 1) AUTO-TYPE TERMINAL TEXT =====
+    const BASE64_COORDS = "MjUxMi4zNyA5MDc5LjUy"; // <-- put your Base64 here (you already have one)
+    const message = [
+      "[LINK] Establishing encrypted uplink…",
+      "[OK]  Cipher handshake complete.",
+      "",
+      "IMPERIAL TRANSMISSION // 441-SHADOW",
+      "Signal integrity: 67%",
+      "",
+      "Only those who listen will find what was buried.",
+      "",
+      "Coordinates (encoded):",
+      BASE64_COORDS,
+      "",
+      "Repeat at dusk."
+    ].join("\n");
+
+    const typedEl = document.getElementById("typed");
+    let typingTimer = null;
+
+    function typeOut(text, speedMs = 22) {
+      clearInterval(typingTimer);
+      typedEl.textContent = "";
+      let i = 0;
+      typingTimer = setInterval(() => {
+        typedEl.textContent += text[i];
+        i++;
+        if (i >= text.length) clearInterval(typingTimer);
+      }, speedMs);
+    }
+
+    // Start typing on load
+    typeOut(message);
+
+    document.getElementById("btnReplay").addEventListener("click", () => {
+      typeOut(message);
+    });
+
+    // ===== 2) RADIO STATIC SOUND (NO FILE NEEDED) =====
+    // Generates white noise via Web Audio API.
+    let audioCtx = null;
+    let noiseSource = null;
+    let gainNode = null;
+    let staticEnabled = false;
+
+    function startStatic() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+      // Some browsers start suspended until user gesture
+      if (audioCtx.state === "suspended") audioCtx.resume();
+
+      const bufferSize = 2 * audioCtx.sampleRate; // 2 seconds
+      const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const output = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        // white noise
+        output[i] = Math.random() * 2 - 1;
+      }
+
+      noiseSource = audioCtx.createBufferSource();
+      noiseSource.buffer = noiseBuffer;
+      noiseSource.loop = true;
+
+      gainNode = audioCtx.createGain();
+      gainNode.gain.value = 0.06; // volume (lower = subtler)
+
+      noiseSource.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      noiseSource.start();
+      staticEnabled = true;
+    }
+
+    function stopStatic() {
+      try { if (noiseSource) noiseSource.stop(); } catch(e) {}
+      noiseSource = null;
+      gainNode = null;
+      staticEnabled = false;
+    }
+
+    const btnStatic = document.getElementById("btnStatic");
+    btnStatic.addEventListener("click", () => {
+      if (!staticEnabled) {
+        startStatic();
+        btnStatic.textContent = "Disable Radio Static";
+      } else {
+        stopStatic();
+        btnStatic.textContent = "Enable Radio Static";
+      }
+    });
+
+    // ===== 4) GLITCH (already via CSS) + occasional micro-jitter =====
+    // Tiny random wobble for the header to sell the "signal"
+    const header = document.querySelector(".glitch");
+    setInterval(() => {
+      const n = Math.random();
+      header.style.transform = (n > 0.88)
+        ? `translate(${(Math.random()*2-1).toFixed(2)}px, ${(Math.random()*2-1).toFixed(2)}px)`
+        : "translate(0,0)";
+    }, 220);
+  </script>
 </body>
 </html>
