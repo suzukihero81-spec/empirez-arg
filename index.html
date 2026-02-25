@@ -134,34 +134,34 @@
   </div>
 
   <script>
-    const BASE64_COORDS = "MjUxMi4zNyA5MDc5LjUy"; // Your encoded coordinates
+  const BASE64_COORDS = "MjUxMi4zNyA5MDc5LjUy"; // Your encoded coordinates
 
-    const message = [
-      "[LINK] Establishing encrypted uplink...",
-      "[OK]  Cipher handshake complete.",
-      "",
-      "IMPERIAL TRANSMISSION // 441-SHADOW",
-      "Signal integrity: 67%",
-      "",
-      MjUxMi4zNyA5MDc5LjUy,
-      "",
-      "Repeat at dusk."
-    ].join("\n");
+  const message = [
+    "[LINK] Establishing encrypted uplink...",
+    "[OK]  Cipher handshake complete.",
+    "",
+    "IMPERIAL TRANSMISSION // 441-SHADOW",
+    "Signal integrity: 67%",
+    "",
+    BASE64_COORDS,
+    "",
+    "Repeat at dusk."
+  ].join("\n");
 
-    const typedEl = document.getElementById("typed");
+  const typedEl = document.getElementById("typed");
 
-    function typeOut(text, speedMs = 22) {
-      typedEl.textContent = "";
-      let i = 0;
-      const interval = setInterval(() => {
-        typedEl.textContent += text[i];
-        i++;
-        if (i >= text.length) clearInterval(interval);
-      }, speedMs);
-    }
+  function typeOut(text, speedMs = 22) {
+    typedEl.textContent = "";
+    let i = 0;
+    const interval = setInterval(() => {
+      typedEl.textContent += text[i];
+      i++;
+      if (i >= text.length) clearInterval(interval);
+    }, speedMs);
+  }
 
-    typeOut(message);
-  </script>
+  typeOut(message);
+</script>
 
 </body>
 </html>
